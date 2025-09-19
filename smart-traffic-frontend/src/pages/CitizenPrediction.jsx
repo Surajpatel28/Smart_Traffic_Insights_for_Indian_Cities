@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { junctions } from '../utils/mockData';
-import { getCitizenPrediction } from '../utils/api';
+import { getJunctions, getCitizenPrediction } from '../utils/api';
 
 const CitizenPrediction = () => {
   const navigate = useNavigate();
@@ -13,6 +12,24 @@ const CitizenPrediction = () => {
   });
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [junctions, setJunctions] = useState([]);
+  const [loadingJunctions, setLoadingJunctions] = useState(true);
+
+  // Fetch junctions on component mount
+  useEffect(() => {
+    const fetchJunctions = async () => {
+      try {
+        const junctionData = await getJunctions();
+        setJunctions(junctionData);
+      } catch (error) {
+        console.error('Failed to fetch junctions:', error);
+      } finally {
+        setLoadingJunctions(false);
+      }
+    };
+
+    fetchJunctions();
+  }, []);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -66,9 +83,12 @@ const CitizenPrediction = () => {
                   name="source"
                   value={formData.source}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={loadingJunctions}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
                 >
-                  <option value="">Select source junction</option>
+                  <option value="">
+                    {loadingJunctions ? 'Loading junctions...' : 'Select source junction'}
+                  </option>
                   {junctions.map((junction) => (
                     <option key={junction.id} value={junction.id}>
                       {junction.id} - {junction.name}
@@ -85,9 +105,12 @@ const CitizenPrediction = () => {
                   name="destination"
                   value={formData.destination}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={loadingJunctions}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
                 >
-                  <option value="">Select destination junction</option>
+                  <option value="">
+                    {loadingJunctions ? 'Loading junctions...' : 'Select destination junction'}
+                  </option>
                   {junctions.map((junction) => (
                     <option key={junction.id} value={junction.id}>
                       {junction.id} - {junction.name}

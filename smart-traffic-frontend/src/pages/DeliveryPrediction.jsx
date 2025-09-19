@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { junctions } from '../utils/mockData';
-import { getDeliveryPrediction } from '../utils/api';
+import { getJunctions, getDeliveryPrediction } from '../utils/api';
 
 const DeliveryPrediction = () => {
   const navigate = useNavigate();
