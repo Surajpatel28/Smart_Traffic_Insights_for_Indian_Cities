@@ -27,12 +27,15 @@ const DeliveryPrediction = () => {
   useEffect(() => {
     const fetchJunctions = async () => {
       try {
+        console.log('DeliveryPrediction: Starting to fetch junctions...'); // Debug log
         const junctionData = await getJunctions();
+        console.log('DeliveryPrediction: Received junction data:', junctionData); // Debug log
         setJunctions(junctionData);
       } catch (error) {
         console.error('Failed to fetch junctions:', error);
       } finally {
         setLoadingJunctions(false);
+        console.log('DeliveryPrediction: Loading complete'); // Debug log
       }
     };
 
@@ -97,8 +100,10 @@ const DeliveryPrediction = () => {
                   <option value="">
                     {loadingJunctions ? 'Loading junctions...' : 'Select source junction'}
                   </option>
-                  {junctions.map((junction) => (
-                    <option key={junction.id} value={junction.id}>
+                  {junctions
+                    .filter(junction => junction && junction.id != null) // Filter out invalid entries
+                    .map((junction) => (
+                    <option key={`delivery-source-${junction.id}`} value={junction.id}>
                       {junction.id} - {junction.name}
                     </option>
                   ))}
@@ -119,8 +124,10 @@ const DeliveryPrediction = () => {
                   <option value="">
                     {loadingJunctions ? 'Loading junctions...' : 'Select destination junction'}
                   </option>
-                  {junctions.map((junction) => (
-                    <option key={junction.id} value={junction.id}>
+                  {junctions
+                    .filter(junction => junction && junction.id != null) // Filter out invalid entries
+                    .map((junction) => (
+                    <option key={`delivery-dest-${junction.id}`} value={junction.id}>
                       {junction.id} - {junction.name}
                     </option>
                   ))}

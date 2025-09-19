@@ -10,19 +10,35 @@ const api = axios.create({
 
 // Fetch available junctions from API
 export const getJunctions = async () => {
+  // Temporarily return fallback data for testing UI
+  const fallbackJunctions = [
+    { id: 1, name: 'Junction 1' },
+    { id: 2, name: 'Junction 2' },
+    { id: 3, name: 'Junction 3' },
+    { id: 4, name: 'Junction 4' },
+  ];
+  console.log('Using fallback junctions for testing:', fallbackJunctions);
+  return fallbackJunctions;
+
+  /* Commented out for testing - uncomment when backend is ready
   try {
     const response = await api.get('/junctions');
-    return response.data.available_junctions || [];
+    const junctions = response.data.available_junctions || [];
+    console.log('Fetched junctions from API:', junctions); // Debug log
+    return junctions;
   } catch (error) {
     console.error('Error fetching junctions:', error);
-    // Fallback to mock data if API fails
-    return [
+    // Fallback to mock data if API fails - using integer IDs to match backend
+    const fallbackJunctions = [
       { id: 1, name: 'Junction 1' },
       { id: 2, name: 'Junction 2' },
       { id: 3, name: 'Junction 3' },
       { id: 4, name: 'Junction 4' },
     ];
+    console.log('Using fallback junctions:', fallbackJunctions); // Debug log
+    return fallbackJunctions;
   }
+  */
 };
 
 // Check API health
@@ -90,10 +106,22 @@ export const getTrafficPrediction = async (sourceJunction, destinationJunction, 
       time: time
     };
     
+    console.log('Sending prediction request:', data); // Debug log
+    
     const response = await api.post('/predict', data);
     return transformPredictionResponse(response.data);
   } catch (error) {
     console.error('Error fetching traffic prediction:', error);
+    console.error('Request data was:', {
+      source_junction: parseInt(sourceJunction),
+      destination_junction: parseInt(destinationJunction),
+      date: date,
+      time: time
+    });
+    if (error.response) {
+      console.error('Response status:', error.response.status);
+      console.error('Response data:', error.response.data);
+    }
     throw error;
   }
 };
@@ -101,7 +129,9 @@ export const getTrafficPrediction = async (sourceJunction, destinationJunction, 
 // Wrapper for citizen prediction (for backward compatibility)
 export const getCitizenPrediction = async (source, destination, dateTime) => {
   try {
+    // Parse the datetime-local input (format: "2025-09-20T08:30")
     const [date, time] = dateTime.split('T');
+    console.log('Parsed date:', date, 'time:', time); // Debug log
     const result = await getTrafficPrediction(source, destination, date, time);
     return result.citizenFormat;
   } catch (error) {

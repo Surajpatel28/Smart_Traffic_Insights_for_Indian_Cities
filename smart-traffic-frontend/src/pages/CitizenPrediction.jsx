@@ -19,12 +19,15 @@ const CitizenPrediction = () => {
   useEffect(() => {
     const fetchJunctions = async () => {
       try {
+        console.log('CitizenPrediction: Starting to fetch junctions...'); // Debug log
         const junctionData = await getJunctions();
+        console.log('CitizenPrediction: Received junction data:', junctionData); // Debug log
         setJunctions(junctionData);
       } catch (error) {
         console.error('Failed to fetch junctions:', error);
       } finally {
         setLoadingJunctions(false);
+        console.log('CitizenPrediction: Loading complete'); // Debug log
       }
     };
 
@@ -55,6 +58,9 @@ const CitizenPrediction = () => {
       setLoading(false);
     }
   };
+
+  // Debug log to track state
+  console.log('CitizenPrediction render - junctions:', junctions, 'loadingJunctions:', loadingJunctions);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -89,8 +95,10 @@ const CitizenPrediction = () => {
                   <option value="">
                     {loadingJunctions ? 'Loading junctions...' : 'Select source junction'}
                   </option>
-                  {junctions.map((junction) => (
-                    <option key={junction.id} value={junction.id}>
+                  {junctions
+                    .filter(junction => junction && junction.id != null) // Filter out invalid entries
+                    .map((junction) => (
+                    <option key={`source-${junction.id}`} value={junction.id}>
                       {junction.id} - {junction.name}
                     </option>
                   ))}
@@ -111,8 +119,10 @@ const CitizenPrediction = () => {
                   <option value="">
                     {loadingJunctions ? 'Loading junctions...' : 'Select destination junction'}
                   </option>
-                  {junctions.map((junction) => (
-                    <option key={junction.id} value={junction.id}>
+                  {junctions
+                    .filter(junction => junction && junction.id != null) // Filter out invalid entries
+                    .map((junction) => (
+                    <option key={`dest-${junction.id}`} value={junction.id}>
                       {junction.id} - {junction.name}
                     </option>
                   ))}
