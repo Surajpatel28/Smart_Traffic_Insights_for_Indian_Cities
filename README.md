@@ -3,7 +3,7 @@
 A comprehensive AI-powered traffic prediction system designed to optimize urban mobility in Indian cities. This project combines machine learning models with real-time data analysis to provide accurate traffic predictions for citizens, delivery services, and urban planners.
 
 ![Traffic Prediction Demo](diagram-export-9-19-2025-12_30_10-PM.png)
-![Demo](https://drive.google.com/file/d/181nNNwWWxnlGo0ahoh3NbfMAsHb39w1S/view?usp=drive_link)
+https://drive.google.com/file/d/181nNNwWWxnlGo0ahoh3NbfMAsHb39w1S/view?usp=drive_link
 ## 📋 Table of Contents
 
 - [Features](#-features)
